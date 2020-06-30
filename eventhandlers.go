@@ -60,6 +60,7 @@ func HandleConfigureMonitoringEvent(myKeptn *keptn.Keptn, incomingEvent cloudeve
 	} else if dataprovider == "prometheus" {
 		log.Printf("PROMETHEUS_URL set. Configuring datasource in Grafana.")
 
+		// payload for creating a datasource in Grafana
 		values := map[string]string{"name": "Prometheus", "type": "prometheus", "url": os.Getenv("PROMETHEUS_URL"), "access": "proxy"}
 		jsonValue, _ := json.Marshal(values)
 
@@ -85,7 +86,6 @@ func HandleConfigureMonitoringEvent(myKeptn *keptn.Keptn, incomingEvent cloudeve
 
 	// CREATE DASHBOARD
 	if dataprovider == "prometheus" {
-		// TODO GENERATE JSON PAYLOAD
 
 		var s []string
 		for _, stage := range shipyard.Stages {
