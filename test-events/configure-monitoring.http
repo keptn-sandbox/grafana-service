@@ -1,0 +1,17 @@
+POST / HTTP/1.1
+Host: localhost:8080
+Content-Type: application/cloudevents+json
+
+{
+  "type": "sh.keptn.event.monitoring.configure",
+  "specversion": "0.2",
+  "source": "https://github.com/keptn/keptn/prometheus-service",
+  "id": "f2b878d3-03c0-4e8f-bc3f-454bc1b3d79d",
+  "time": "2019-06-07T07:02:15.64489Z",
+  "contenttype": "application/json",
+  "data": {
+    "project": "sockshop",
+    "service": "carts",
+    "type": "prometheus"
+  }
+}
