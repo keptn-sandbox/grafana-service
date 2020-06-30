@@ -81,8 +81,28 @@ dashboard.new(
 .addPanels(
   //std.mapWithIndex(function(e,i) environment(e,i) {gridPos: { h:5,w:6, x:i*6, y:0} }, std.extVar('stages'))
   
-    //environment(e){ gridPos: { h:5,w:6, x:0, y:0} },
-    //for e in std.extVar('stages')
+  //environment(e){ gridPos: { h:5,w:6, x:0, y:0} },
+  //for e in std.extVar('stages')
+
+
+  [
+    row('production', std.extVar('service')+"-"+std.extVar('project')+"-production") { gridPos: { h:5,w:24, x:0, y:0} },
+  ]+
+  [  
+    response_time(std.extVar('service')+"-"+std.extVar('project')+"-production") { gridPos: { h:10,w:6, x:0, y:0 } },
+    throughput(std.extVar('service')+"-"+std.extVar('project')+"-production")    { gridPos: { h:10,w:6, x:6, y:0 } },
+    error_rate(std.extVar('service')+"-"+std.extVar('project')+"-production")    { gridPos: { h:10,w:6, x:12, y:0 } },
+
+  ]+
+  [
+    row('staging', std.extVar('service')+"-"+std.extVar('project')+"-staging") { gridPos: { h:5,w:24, x:0, y:0} },
+  ]+
+  [  
+    response_time(std.extVar('service')+"-"+std.extVar('project')+"-staging") { gridPos: { h:10,w:6, x:0, y:0 } },
+    throughput(std.extVar('service')+"-"+std.extVar('project')+"-staging")    { gridPos: { h:10,w:6, x:6, y:0 } },
+    error_rate(std.extVar('service')+"-"+std.extVar('project')+"-staging")    { gridPos: { h:10,w:6, x:12, y:0 } },
+
+  ]+
   [
     row('dev', std.extVar('service')+"-"+std.extVar('project')+"-dev") { gridPos: { h:5,w:24, x:0, y:0} },
   ]+
@@ -91,37 +111,6 @@ dashboard.new(
     throughput(std.extVar('service')+"-"+std.extVar('project')+"-dev")    { gridPos: { h:10,w:6, x:6, y:0 } },
     error_rate(std.extVar('service')+"-"+std.extVar('project')+"-dev")    { gridPos: { h:10,w:6, x:12, y:0 } },
 
-  ]+
-  [
-    row('staging', std.extVar('service')+"-"+std.extVar('project')+"-dev") { gridPos: { h:5,w:24, x:0, y:0} },
-  ]+
-  [  
-    response_time(std.extVar('service')+"-"+std.extVar('project')+"-dev") { gridPos: { h:10,w:6, x:0, y:0 } },
-    throughput(std.extVar('service')+"-"+std.extVar('project')+"-dev")    { gridPos: { h:10,w:6, x:6, y:0 } },
-    error_rate(std.extVar('service')+"-"+std.extVar('project')+"-dev")    { gridPos: { h:10,w:6, x:12, y:0 } },
-
   ]
-  // [
-  //   response_time(std.extVar('service')+"-"+std.extVar('project')+"-"+e) { gridPos: { h:10,w:6, x:0, y:0 } },
-  //   for e in std.extVar('stages')
-  // ]+
-  // [
-  //   throughput(std.extVar('service')+"-"+std.extVar('project')+"-"+e) { gridPos: { h:10,w:6, x:0, y:0 } },
-  //   for e in std.extVar('stages')
-  // ]+
-  // [
-  //   error_rate(std.extVar('service')+"-"+std.extVar('project')+"-"+e) { gridPos: { h:10,w:6, x:0, y:0 } },
-  //   for e in std.extVar('stages')
-  // ],
-  
-  //   environment("staging")   { gridPos: { h:5,w:6, x:6, y:0} },
-  //   response_time("carts-sockshop-staging") { gridPos: { h:10,w:6, x:6, y:0 } },
-  //   throughput("carts-sockshop-staging")    { gridPos: { h:10,w:6, x:6, y:0 } },
-  //   error_rate("carts-sockshop-staging")    { gridPos: { h:10,w:6, x:6, y:0 } },
 
-  //   environment("production")   { gridPos: { h:5,w:6, x:12, y:0} },
-  //   response_time("carts-sockshop-production") { gridPos: { h:10,w:6, x:12, y:0 } },
-  //   throughput("carts-sockshop-production")    { gridPos: { h:10,w:6, x:12, y:0 } },
-  //   error_rate("carts-sockshop-production")    { gridPos: { h:10,w:6, x:12, y:0 } },
-  // ],
 )
