@@ -113,7 +113,7 @@ Copy the file `env` to `myenv` and add your environment variables to test it loc
 If you happen to edit the `keptn.jsonnet` file you might want to give it a try locally first before you run it in the context of the *Grafana Service*. You can do so by executing the following. This will generate a new file in the folder `gen/` called `keptn.json` which contains the generates dashboard template which you can inspect.
 
 ```console
-jsonnet -J ./grafonnet-lib/ keptn.jsonnet > gen/keptn.json
+jsonnet -J ./grafonnet-lib/ --ext-code stages='["dev","staging"]' --ext-str service=carts --ext-str project=sockshop keptn.jsonnet > gen/keptn.json
 ```
 
 
