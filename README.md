@@ -100,6 +100,11 @@ It is recommended to make use of branches as follows:
 
 When writing code, it is recommended to follow the coding style suggested by the [Golang community](https://github.com/golang/go/wiki/CodeReviewComments).
 
+You might want to port-forward you configuration service during local development to be able to directly communite with it:
+```
+kubectl port-forward svc/configuration-service -n keptn 9090:8080
+```
+
 Copy the file `env` to `myenv` and add your environment variables to test it locally with:
 ```console
 ./local-build.sh && ./local-run.sh

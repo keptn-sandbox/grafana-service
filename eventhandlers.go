@@ -47,7 +47,8 @@ func HandleConfigureMonitoringEvent(myKeptn *keptn.Keptn, incomingEvent cloudeve
 		return errors.New("Grafana API token not set")
 	}
 
-	keptnHandler, err := keptn.NewKeptn(&incomingEvent, keptn.KeptnOpts{ConfigurationServiceURL: "http://localhost:9090"})
+	//keptnHandler, err := keptn.NewKeptn(&incomingEvent, keptn.KeptnOpts{ConfigurationServiceURL: "http://localhost:9090"})
+	keptnHandler, err := keptn.NewKeptn(&incomingEvent, keptn.KeptnOpts{})
 	shipyard, err := keptnHandler.GetShipyard()
 	if err != nil {
 		log.Printf(err.Error())
