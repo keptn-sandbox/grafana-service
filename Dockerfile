@@ -51,7 +51,7 @@ ENV VERSION="${version}"
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /src/grafana-service/keptn.jsonnet .
-COPY --from=builder /src/grafana-service/grafonnet-lib/ /grafonnet-lib/
+COPY --from=builder /src/grafana-service/grafonnet-lib-local/ /grafonnet-lib-local/
 
 COPY --from=builder /src/grafana-service/grafana-service /grafana-service
 
