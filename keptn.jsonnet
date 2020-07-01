@@ -59,6 +59,14 @@ local row(stage, job) =
   );
 //local envs = std.mapWithIndex(function(e,i) environment(e,i) {gridPos: { h:5,w:6, x:i*6, y:0} }, std.extVar('stages'));
 
+local make_row(stage) = [
+    row(stage, std.extVar('service')+"-"+std.extVar('project')+"-"+stage) { gridPos: { h:5,w:24, x:0, y:0} },
+    response_time(std.extVar('service')+"-"+std.extVar('project')+"-"+stage) { gridPos: { h:10,w:6, x:0, y:0 } },
+    throughput(std.extVar('service')+"-"+std.extVar('project')+"-"+stage)    { gridPos: { h:10,w:6, x:6, y:0 } },
+    error_rate(std.extVar('service')+"-"+std.extVar('project')+"-"+stage)    { gridPos: { h:10,w:6, x:12, y:0 } },
+
+];
+
 ////////////////////
 // CREATE DASHBOARD
 ////////////////////
@@ -79,38 +87,17 @@ dashboard.new(
   )
 )
 .addPanels(
-  //std.mapWithIndex(function(e,i) environment(e,i) {gridPos: { h:5,w:6, x:i*6, y:0} }, std.extVar('stages'))
-  
-  //environment(e){ gridPos: { h:5,w:6, x:0, y:0} },
-  //for e in std.extVar('stages')
 
+  std.flattenArrays(std.map(make_row, std.reverse(std.extVar('stages'))))
 
-  [
-    row('production', std.extVar('service')+"-"+std.extVar('project')+"-production") { gridPos: { h:5,w:24, x:0, y:0} },
-  ]+
-  [  
-    response_time(std.extVar('service')+"-"+std.extVar('project')+"-production") { gridPos: { h:10,w:6, x:0, y:0 } },
-    throughput(std.extVar('service')+"-"+std.extVar('project')+"-production")    { gridPos: { h:10,w:6, x:6, y:0 } },
-    error_rate(std.extVar('service')+"-"+std.extVar('project')+"-production")    { gridPos: { h:10,w:6, x:12, y:0 } },
+  // [
+  //   row('production', std.extVar('service')+"-"+std.extVar('project')+"-production") { gridPos: { h:5,w:24, x:0, y:0} },
 
-  ]+
-  [
-    row('staging', std.extVar('service')+"-"+std.extVar('project')+"-staging") { gridPos: { h:5,w:24, x:0, y:0} },
-  ]+
-  [  
-    response_time(std.extVar('service')+"-"+std.extVar('project')+"-staging") { gridPos: { h:10,w:6, x:0, y:0 } },
-    throughput(std.extVar('service')+"-"+std.extVar('project')+"-staging")    { gridPos: { h:10,w:6, x:6, y:0 } },
-    error_rate(std.extVar('service')+"-"+std.extVar('project')+"-staging")    { gridPos: { h:10,w:6, x:12, y:0 } },
+  //   response_time(std.extVar('service')+"-"+std.extVar('project')+"-production") { gridPos: { h:10,w:6, x:0, y:0 } },
+  //   throughput(std.extVar('service')+"-"+std.extVar('project')+"-production")    { gridPos: { h:10,w:6, x:6, y:0 } },
+  //   error_rate(std.extVar('service')+"-"+std.extVar('project')+"-production")    { gridPos: { h:10,w:6, x:12, y:0 } },
 
-  ]+
-  [
-    row('dev', std.extVar('service')+"-"+std.extVar('project')+"-dev") { gridPos: { h:5,w:24, x:0, y:0} },
-  ]+
-  [  
-    response_time(std.extVar('service')+"-"+std.extVar('project')+"-dev") { gridPos: { h:10,w:6, x:0, y:0 } },
-    throughput(std.extVar('service')+"-"+std.extVar('project')+"-dev")    { gridPos: { h:10,w:6, x:6, y:0 } },
-    error_rate(std.extVar('service')+"-"+std.extVar('project')+"-dev")    { gridPos: { h:10,w:6, x:12, y:0 } },
+  // ]+
 
-  ]
 
 )
