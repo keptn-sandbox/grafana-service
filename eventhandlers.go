@@ -95,9 +95,9 @@ func HandleConfigureMonitoringEvent(myKeptn *keptn.Keptn, incomingEvent cloudeve
 		var myStages = "[" + strings.Join(s, ", ") + "]"
 		log.Println(myStages)
 
-		// output, err := exec.Command("jsonnet", "-J", "./grafonnet-lib/", "keptn.jsonnet", ">", "gen/keptn.json").Output()
+		// output, err := exec.Command("jsonnet", "-J", "./grafonnet-lib-local/", "keptn.jsonnet", ">", "gen/keptn.json").Output()
 		output, err := exec.Command("jsonnet",
-			"-J", "./grafonnet-lib/",
+			"-J", "./grafonnet-lib-local/",
 			"--ext-code", "stages="+myStages+"",
 			"--ext-str", "service="+data.Service+"",
 			"--ext-str", "project="+data.Project+"",
