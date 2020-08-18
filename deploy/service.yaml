@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: grafana-service
-        image: keptnsandbox/grafana-service:latest 
+        image: keptnsandbox/grafana-service:0.1.0 
         ports:
           - containerPort: 8080
         env:
