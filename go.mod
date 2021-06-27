@@ -1,15 +1,16 @@
 module github.com/keptn-sandbox/grafana-service
 
-go 1.13
+go 1.16
 
 require (
-	github.com/cloudevents/sdk-go v1.1.2
-	github.com/gogo/protobuf v1.2.0 // indirect
+	github.com/cloudevents/sdk-go/v2 v2.4.1
+	github.com/google/go-cmp v0.5.3 // indirect
+	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/keptn/go-utils v0.6.3-0.20200615074910-2565441cb79d
-	github.com/onsi/ginkgo v1.12.0 // indirect
-	github.com/onsi/gomega v1.9.0 // indirect
-	github.com/prometheus/client_golang v0.9.3-0.20190127221311-3c4408c8b829 // indirect
-	golang.org/x/sys v0.0.0-20200124204421-9fbb57f87de9 // indirect
-	honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc // indirect
+	github.com/keptn/go-utils v0.8.5
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/modern-go/reflect2 v1.0.1 // indirect
+	go.uber.org/atomic v1.8.0 // indirect
+	go.uber.org/multierr v1.7.0 // indirect
+	go.uber.org/zap v1.17.0 // indirect
 )

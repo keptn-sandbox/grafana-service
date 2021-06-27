@@ -7,12 +7,11 @@ import (
 	"log"
 	"os"
 
-	keptn "github.com/keptn/go-utils/pkg/lib"
-
-	"github.com/cloudevents/sdk-go/pkg/cloudevents"
-	"github.com/cloudevents/sdk-go/pkg/cloudevents/client"
-	cloudeventshttp "github.com/cloudevents/sdk-go/pkg/cloudevents/transport/http"
+	cloudevents "github.com/cloudevents/sdk-go/v2" // make sure to use v2 cloudevents here
 	"github.com/kelseyhightower/envconfig"
+	keptnevents "github.com/keptn/go-utils/pkg/lib"
+	keptn "github.com/keptn/go-utils/pkg/lib/keptn"
+	keptnv2 "github.com/keptn/go-utils/pkg/lib/v0_2_0"
 )
 
 var keptnOptions = keptn.KeptnOpts{}
@@ -36,7 +35,7 @@ type envConfig struct {
  * See https://github.com/keptn/spec/blob/0.1.3/cloudevents.md for details on the payload
  */
 func processKeptnCloudEvent(ctx context.Context, event cloudevents.Event) error {
-	myKeptn, err := keptn.NewKeptn(&event, keptnOptions)
+	myKeptn, err := keptnv2.NewKeptn(&event, keptnOptions)
 
 	log.Printf("gotEvent(%s): %s - %s", event.Type(), myKeptn.KeptnContext, event.Context.GetID())
 
@@ -45,92 +44,10 @@ func processKeptnCloudEvent(ctx context.Context, event cloudevents.Event) error 
 		return err
 	}
 
-	// ********************************************
-	// Lets test on each possible Event Type and call the respective handler function
-	// ********************************************
-	if event.Type() == keptn.ConfigurationChangeEventType {
-		log.Printf("Processing Configuration Change Event")
-
-		configChangeEventData := &keptn.ConfigurationChangeEventData{}
-		err := event.DataAs(configChangeEventData)
-		if err != nil {
-			log.Printf("Got Data Error: %s", err.Error())
-			return err
-		}
-
-		return HandleConfigurationChangeEvent(myKeptn, event, configChangeEventData)
-	} else if event.Type() == keptn.DeploymentFinishedEventType {
-		log.Printf("Processing Deployment Finished Event")
-
-		deployFinishEventData := &keptn.DeploymentFinishedEventData{}
-		err := event.DataAs(deployFinishEventData)
-		if err != nil {
-			log.Printf("Got Data Error: %s", err.Error())
-			return err
-		}
-
-		return HandleDeploymentFinishedEvent(myKeptn, event, deployFinishEventData)
-	} else if event.Type() == keptn.TestsFinishedEventType {
-		log.Printf("Processing Test Finished Event")
-
-		testsFinishedEventData := &keptn.TestsFinishedEventData{}
-		err := event.DataAs(testsFinishedEventData)
-		if err != nil {
-			log.Printf("Got Data Error: %s", err.Error())
-			return err
-		}
-
-		return HandleTestsFinishedEvent(myKeptn, event, testsFinishedEventData)
-	} else if event.Type() == keptn.StartEvaluationEventType {
-		log.Printf("Processing Start Evaluation Event")
-
-		startEvaluationEventData := &keptn.StartEvaluationEventData{}
-		err := event.DataAs(startEvaluationEventData)
-		if err != nil {
-			log.Printf("Got Data Error: %s", err.Error())
-			return err
-		}
-
-		return HandleStartEvaluationEvent(myKeptn, event, startEvaluationEventData)
-	} else if event.Type() == keptn.EvaluationDoneEventType {
-		log.Printf("Processing Evaluation Done Event")
-
-		evaluationDoneEventData := &keptn.EvaluationDoneEventData{}
-		err := event.DataAs(evaluationDoneEventData)
-		if err != nil {
-			log.Printf("Got Data Error: %s", err.Error())
-			return err
-		}
-
-		return HandleEvaluationDoneEvent(myKeptn, event, evaluationDoneEventData)
-	} else if event.Type() == keptn.ProblemOpenEventType || event.Type() == keptn.ProblemEventType {
-		// Subscribing to a problem.open or problem event is deprecated since Keptn 0.7 - subscribe to sh.keptn.event.action.triggered
-		log.Printf("Subscribing to a problem.open or problem event is not recommended since Keptn 0.7. Please subscribe to event of type: sh.keptn.event.action.triggered")
-		log.Printf("Processing Problem Event")
-
-		problemEventData := &keptn.ProblemEventData{}
-		err := event.DataAs(problemEventData)
-		if err != nil {
-			log.Printf("Got Data Error: %s", err.Error())
-			return err
-		}
-
-		return HandleProblemEvent(myKeptn, event, problemEventData)
-	} else if event.Type() == keptn.ActionTriggeredEventType {
-		log.Printf("Processing Action Triggered Event")
-
-		actionTriggeredEventData := &keptn.ActionTriggeredEventData{}
-		err := event.DataAs(actionTriggeredEventData)
-		if err != nil {
-			log.Printf("Got Data Error: %s", err.Error())
-			return err
-		}
-
-		return HandleActionTriggeredEvent(myKeptn, event, actionTriggeredEventData)
-	} else if event.Type() == keptn.ConfigureMonitoringEventType {
+	if event.Type() == keptnevents.ConfigureMonitoringEventType {
 		log.Printf("Processing Configure Monitoring Event")
 
-		configureMonitoringEventData := &keptn.ConfigureMonitoringEventData{}
+		configureMonitoringEventData := &keptnevents.ConfigureMonitoringEventData{}
 		err := event.DataAs(configureMonitoringEventData)
 		if err != nil {
 			log.Printf("Got Data Error: %s", err.Error())
@@ -168,8 +85,6 @@ func main() {
  * Opens up a listener on localhost:port/path and passes incoming requets to gotEvent
  */
 func _main(args []string, env envConfig) int {
-	ctx := context.Background()
-
 	// configure keptn options
 	if env.Env == "local" {
 		log.Println("env=local: Running with local filesystem to fetch resources")
@@ -177,26 +92,28 @@ func _main(args []string, env envConfig) int {
 	}
 
 	keptnOptions.ConfigurationServiceURL = env.ConfigurationServiceUrl
-	keptnOptions.EventBrokerURL = env.EventBrokerUrl
-
-	// configure http server to receive cloudevents
-	t, err := cloudeventshttp.New(
-		cloudeventshttp.WithPort(env.Port),
-		cloudeventshttp.WithPath(env.Path),
-	)
 
 	log.Println("Starting grafana-service...")
 	log.Printf("    on Port = %d; Path=%s", env.Port, env.Path)
 
+	ctx := context.Background()
+	ctx = cloudevents.WithEncodingStructured(ctx)
+
+	log.Printf("Creating new http handler")
+
+	// configure http server to receive cloudevents
+	p, err := cloudevents.NewHTTP(cloudevents.WithPath(env.Path), cloudevents.WithPort(env.Port))
+
 	if err != nil {
-		log.Fatalf("failed to create transport, %v", err)
+		log.Fatalf("failed to create client, %v", err)
 	}
-	c, err := client.New(t)
+	c, err := cloudevents.NewClient(p)
 	if err != nil {
 		log.Fatalf("failed to create client, %v", err)
 	}
 
-	log.Fatalf("failed to start receiver: %s", c.StartReceiver(ctx, processKeptnCloudEvent))
+	log.Printf("Starting receiver")
+	log.Fatal(c.StartReceiver(ctx, processKeptnCloudEvent))
 
 	return 0
 }

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	keptnevents "github.com/keptn/go-utils/pkg/lib"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,8 +12,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/cloudevents/sdk-go/pkg/cloudevents"
-	keptn "github.com/keptn/go-utils/pkg/lib"
+	cloudevents "github.com/cloudevents/sdk-go/v2" // make sure to use v2 cloudevents here
+	keptnv2 "github.com/keptn/go-utils/pkg/lib/v0_2_0"
 )
 
 /**
@@ -35,7 +36,7 @@ var grafanaAPIDashboardURL = os.Getenv("GRAFANA_URL") + "/api/dashboards/db"
 var bearer = "Bearer " + os.Getenv("GRAFANA_TOKEN")
 
 // Handles ConfigureMonitoringEventType = "sh.keptn.event.monitoring.configure"
-func HandleConfigureMonitoringEvent(myKeptn *keptn.Keptn, incomingEvent cloudevents.Event, data *keptn.ConfigureMonitoringEventData) error {
+func HandleConfigureMonitoringEvent(myKeptn *keptnv2.Keptn, incomingEvent cloudevents.Event, data *keptnevents.ConfigureMonitoringEventData) error {
 	log.Printf("Handling Configure Monitoring Event: %s", incomingEvent.Context.GetID())
 
 	dataprovider := data.Type
@@ -48,8 +49,7 @@ func HandleConfigureMonitoringEvent(myKeptn *keptn.Keptn, incomingEvent cloudeve
 	}
 
 	//keptnHandler, err := keptn.NewKeptn(&incomingEvent, keptn.KeptnOpts{ConfigurationServiceURL: "http://localhost:9090"})
-	keptnHandler, err := keptn.NewKeptn(&incomingEvent, keptn.KeptnOpts{})
-	shipyard, err := keptnHandler.GetShipyard()
+	shipyard, err := myKeptn.GetShipyard()
 	if err != nil {
 		log.Printf(err.Error())
 		return err
@@ -89,7 +89,7 @@ func HandleConfigureMonitoringEvent(myKeptn *keptn.Keptn, incomingEvent cloudeve
 	if dataprovider == "prometheus" {
 
 		var s []string
-		for _, stage := range shipyard.Stages {
+		for _, stage := range shipyard.Spec.Stages {
 			s = append(s, `"`+stage.Name+`"`)
 		}
 		var myStages = "[" + strings.Join(s, ", ") + "]"
